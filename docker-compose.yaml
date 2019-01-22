@@ -1,0 +1,31 @@
+version: '3'
+services:
+
+###--- nagios Setup ---###
+  nagios:
+    container_name: nagios
+    image: jasonrivers/nagios:latest
+    volumes:
+      - /opt/appdata/nagios/etc:/opt/nagios/etc
+      - /opt/appdata/nagios/var:/opt/nagios/var
+      - /opt/appdata/nagios/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugins
+      - /opt/appdata/nagios/graph-var:/opt/nagiosgraph/var
+      - /opt/appdata/nagios/graph-etc:/opt/nagiosgraph/etc
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    environment:
+      - PUID=1000
+      - GUID=1000
+    labels:
+      traefik.enable: "true"
+      traefik.frontend.redirect.entryPoint: "https"
+      traefik.frontend.rule: "Host:nagios.wooster.xyz"
+      traefik.port: "80"
+      traefik.docker.network: "plexguide"
+    networks:
+      - plexguide
+
+networks:
+  plexguide:
+    external:
+      name: plexguide
